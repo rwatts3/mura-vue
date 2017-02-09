@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Muracon 2017 Demo</title>
+		<!--<script src="https://unpkg.com/vue/dist/vue.js"></script>-->
+		<script src="../mura-nuxt/node_modules/vue/dist/vue.js"></script>
+		<script src="./dist/mura-vue.browser.js"></script>
+		<!--Resources-->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+
+	</head>
+	<body>
+		<div id="app" class="container">
+			<div class="row center-align">
+				<div class="row">
+					<div class="col m6">
+						<img class="responsive-img" src="https://www.cmscritic.com/site/assets/files/5785/muracmslogo.png" alt="Mura Logo">
+					</div>
+					<div class="col m6">
+						<img class="responsive-img" src="https://vuejs.org/images/logo.png" alt="Vue logo">
+					</div>
+				</div>
+				<div class="row">
+					<h1>{{ greeting }}</h1>
+				</div>
+			</div>
+			<div class="row">
+				<mura-demo title="Demo Component" :snippet="demo_demo">
+					<div slot="description">
+						A simple demo of the Demo Component.
+						You may use the demo component for things such as building
+						a styleguide.
+					</div>
+				</mura-demo>
+			</div>
+			<div class="row">
+				<mura-demo title="Mura Query" :snippet="demo_query" >
+					<div slot="description">
+						The Mura Query Component accepts props
+						that will be used to talk to Mura's API,
+						and returns a scoped vue object labled <b>results</b>.
+						You may then use this object within a template scope to connect,
+						your display logic.
+					</div>
+				</mura-demo>
+				<mura-query 
+					id="testQuery"
+					src="http://www.ryanwatts.me"
+					siteid="mbrw"
+					fields="title,description,summary,image"
+				>
+					<template scope="results">
+						<div class="col m6 left" v-for="(item,index) in results.results.items">
+							<div class="card medium">
+								<div class="card-content" >
+									<span class="card-title">{{item.title}}</span>
+									<p v-html="item.summary"></p>
+								</div>
+								<div class="card-action">
+									<div class="row">
+										<textarea v-html="item" height="40"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</template>
+				</mura-query>
+			</div>
+			
+		</div>
+
+		<script>
+			Vue.use(MuraVue);
+			new Vue({
+				el: '#app',
+				data: {
+					greeting: 'Mura Meets Vue',
+					demo_demo: '<mura-demo title="Some Title"></mura-demo>',
+					demo_query: `
+						<mura-query 
+							id="testQuery"
+							src="http://www.ryanwatts.me"
+							siteid="mbrw"
+							entitytype="content"
+							filters=""
+						>
+							<template scope="results">
+								<ul>
+									<li v-for="(item,index) in results.results.items">
+										{{item.title}}
+									</li>
+								</ul>
+							</template>
+						</mura-query>
+					`
+				},
+				methods: {
+					humanizeURL: function (url) {
+						return url
+							.replace(/^https?:\/\//, '')
+							.replace(/\/$/, '')
+						}
+				}
+			})
+		</script>
+	</body>
+</html>
